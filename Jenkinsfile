@@ -14,7 +14,7 @@ node {
         	rtMaven.resolver releaseRepo:'libs-release', snapshotRepo:'libs-snapshot', server: server
     	}
     
-    	stage('Git Checkout') {
+    	stage('GitHub Checkout') {
         	git url: 'https://github.com/barath147/webapp.git'
     	}
 	
@@ -25,6 +25,11 @@ node {
 		}
 		}
 	}
+	
+	stage('Deploy QA Container') {
+		deploy adapters: [tomcat7(credentialsId: 'TOMCAT-CREDS', path: '', url: 'http://3.21.154.146:8080')], contextPath: '/QAWebapp', onFailure: false, war: '**/*.war'
+	}
+	
     	stage('Upload to Artifactory') {
         	buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install'
     	}
