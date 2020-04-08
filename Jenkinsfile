@@ -1,6 +1,6 @@
 node {
 	// Pipeline Properties
-	properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '10', numToKeepStr: '5')), pipelineTriggers([[$class: 'PeriodicFolderTrigger', interval: '1d']])])
+	properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '10', numToKeepStr: '10')), pipelineTriggers([githubPush(), pollSCM('')])])
 	
         // Get Artifactory server instance, defined in the Artifactory Plugin administration page.
 	def server = Artifactory.server "artifactory"
