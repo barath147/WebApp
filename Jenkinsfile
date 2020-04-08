@@ -32,7 +32,24 @@ node {
 	
     	stage('Upload to Artifactory') {
         	buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install'
+		server.publishBuildInfo buildInfo
     	}
+	
+	stage('Quality & Performance Testing') {
+		sh 'mvn clean compile test -f functionaltest/pom.xml'
+		publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: '\\target\\surefire-reports\\', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: ''])
+		blazeMeterTest credentialsId: 'BLAZEMETER-KEY', getJtl: true, getJunit: true, testId: '7900226.taurus', workspaceId: '468388'
+	}
+	
+	stage('Deploy PROD Container') {
+		deploy adapters: [tomcat7(credentialsId: 'TOMCAT-CREDS', path: '', url: 'http://18.191.219.231:8080')], contextPath: '/ProdWebapp', onFailure: false, war: '**/*.war'
+	}
+	
+	stage('Acceptance Testing') {
+		sh 'mvn clean compile test -f Acceptancetest/pom.xml'
+		publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: '\\Acceptancetest\\target\\surefire-reports\\', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: ''])
+		
+	}
 	
     	stage('Publish Build Info') {
         	server.publishBuildInfo buildInfo
