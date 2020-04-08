@@ -38,7 +38,7 @@ node {
 	stage('Quality & Performance Testing') {
 		sh 'mvn clean compile test -f functionaltest/pom.xml'
 		publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: '\\target\\surefire-reports\\', reportFiles: 'index.html', reportName: 'Quality Test Report', reportTitles: ''])
-		blazeMeterTest credentialsId: 'BLAZEMETER-KEY', getJtl: true, getJunit: true, testId: '7902430.taurus', workspaceId: '468388'
+		//blazeMeterTest credentialsId: 'BLAZEMETER-KEY', getJtl: true, getJunit: true, testId: '7902430.taurus', workspaceId: '468388'
 		slackSend channel: 'devops-case-study-group', failOnError: true, message: "${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) ==>> Quality and Performance Testing Complete", tokenCredentialId: 'SLACK-TOKEN'
 		
 	}
