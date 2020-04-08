@@ -1,18 +1,13 @@
 node {
-	// Pipeline Properties
-	properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '10', numToKeepStr: '10')), pipelineTriggers([githubPush(), pollSCM('')])])
-	
-        // Get Artifactory server instance, defined in the Artifactory Plugin administration page.
-	def server = Artifactory.server "artifactory"
-        // Create an Artifactory Maven instance.
-        def rtMaven = Artifactory.newMavenBuild()
-        def buildInfo
-	
-	stage('Initialize') {
+	stage('Initialize Pipeline') {
+		properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '10', numToKeepStr: '10')), pipelineTriggers([githubPush(), pollSCM('')])])
+		def server = Artifactory.server "artifactory"
+        	def rtMaven = Artifactory.newMavenBuild()
+        	def buildInfo
         	rtMaven.tool = "maven"
         	rtMaven.deployer releaseRepo:'libs-release-local', snapshotRepo:'libs-snapshot-local', server: server
         	rtMaven.resolver releaseRepo:'libs-release', snapshotRepo:'libs-snapshot', server: server
-		slackSend channel: 'devops-case-study-group', failOnError: true, message: "${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) ==>> Pipeline Started", tokenCredentialId: 'SLACK-TOKEN'
+		slackSend channel: 'devops-case-study-group', failOnError: true, message: "${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) ==>> Pipeline Initialized", tokenCredentialId: 'SLACK-TOKEN'
     	}
     
     	stage('Code Checkout & Build') {
@@ -21,7 +16,7 @@ node {
 		slackSend channel: 'devops-case-study-group', failOnError: true, message: "${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) ==>> GitHub Checkout and Maven Build Complete", tokenCredentialId: 'SLACK-TOKEN'
     	}
 	
-	stage('SonarQube Static Code Analysis') {
+	stage('Static Code Analysis') {
 		withCredentials([usernamePassword(credentialsId: 'SONAR-QUBE-CREDS', passwordVariable: 'SONAR_PASS', usernameVariable: 'SONAR_USER')]) {
 		withSonarQubeEnv('SonarQube') {
 			sh 'mvn $SONAR_MAVEN_GOAL -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_USER -Dsonar.password=$SONAR_PASS -Dsonar.sources=. -Dsonar.tests=. -Dsonar.test.inclusions=**/test/java/servlet/createpage_junit.java -Dsonar.exclusions=**/test/java/servlet/createpage_junit.java'
@@ -35,7 +30,7 @@ node {
 		slackSend channel: 'devops-case-study-group', failOnError: true, message: "${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) ==>> QA Deployment Complete", tokenCredentialId: 'SLACK-TOKEN'
 	}
 	
-    	stage('JFrog Artifactory Upload') {
+    	stage('UploadTo Artifactory') {
         	buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install'
 		server.publishBuildInfo buildInfo
 		slackSend channel: 'devops-case-study-group', failOnError: true, message: "${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) ==>> JFrog Artifactory Upload Complete", tokenCredentialId: 'SLACK-TOKEN'
