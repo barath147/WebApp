@@ -1,9 +1,8 @@
 node {
 	stage('Initialize Pipeline') {
 		properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '10', numToKeepStr: '10')), pipelineTriggers([githubPush(), pollSCM('')])])
-		def server = Artifactory.server "artifactory"
-        	def rtMaven = Artifactory.newMavenBuild()
-        	def buildInfo
+		server = Artifactory.server "artifactory"
+        	rtMaven = Artifactory.newMavenBuild()
         	rtMaven.tool = "maven"
         	rtMaven.deployer releaseRepo:'libs-release-local', snapshotRepo:'libs-snapshot-local', server: server
         	rtMaven.resolver releaseRepo:'libs-release', snapshotRepo:'libs-snapshot', server: server
