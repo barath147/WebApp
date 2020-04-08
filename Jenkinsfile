@@ -42,7 +42,7 @@ node {
 	
 	stage('Quality & Performance Testing') {
 		sh 'mvn clean compile test -f functionaltest/pom.xml'
-		publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: '\\target\\surefire-reports\\', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: ''])
+		publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: '\\target\\surefire-reports\\', reportFiles: 'index.html', reportName: 'Quality Test Report', reportTitles: ''])
 		blazeMeterTest credentialsId: 'BLAZEMETER-KEY', getJtl: true, getJunit: true, testId: '7900226.taurus', workspaceId: '468388'
 		slackSend channel: 'devops-case-study-group', failOnError: true, message: "${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) ==>> Quality and Performance Testing Complete", tokenCredentialId: 'SLACK-TOKEN'
 		
@@ -55,7 +55,7 @@ node {
 	
 	stage('Acceptance Testing') {
 		sh 'mvn clean compile test -f Acceptancetest/pom.xml'
-		publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: '\\Acceptancetest\\target\\surefire-reports\\', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: ''])
+		publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: '\\Acceptancetest\\target\\surefire-reports\\', reportFiles: 'index.html', reportName: 'Acceptance Test Report', reportTitles: ''])
 		slackSend channel: 'devops-case-study-group', failOnError: true, message: "${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) ==>> Acceptance Testing Complete", tokenCredentialId: 'SLACK-TOKEN'
 		
 	}
