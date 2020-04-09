@@ -27,7 +27,7 @@ node {
 	
 	stage('DeployAppTo QA') {
 		deploy adapters: [tomcat7(credentialsId: 'TOMCAT-CREDS', path: '', url: 'http://3.21.154.146:8080')], contextPath: '/QAWebapp', onFailure: false, war: '**/*.war'
-		jiraSendDeploymentInfo environmentId: 'QA', environmentName: 'QA', environmentType: 'testing', serviceIds: ['DOPS-1', 'DOPS-1'], site: 'devopscasestudy.atlassian.net'
+		jiraSendDeploymentInfo environmentId: 'QA', environmentName: 'QA', environmentType: 'testing', site: 'devopscasestudy.atlassian.net'
 		slackSend channel: 'devops-case-study-group', failOnError: true, message: "${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) ==>> QA Deployment Complete", tokenCredentialId: 'SLACK-TOKEN'
 	}
 	
@@ -47,7 +47,7 @@ node {
 	
 	stage('DeployAppTo PROD') {
 		deploy adapters: [tomcat7(credentialsId: 'TOMCAT-CREDS', path: '', url: 'http://18.191.219.231:8080')], contextPath: '/ProdWebapp', onFailure: false, war: '**/*.war'
-		jiraSendDeploymentInfo environmentId: 'PROD', environmentName: 'PROD', environmentType: 'production', serviceIds: ['DOPS-1', 'DOPS-1'], site: 'devopscasestudy.atlassian.net'
+		jiraSendDeploymentInfo environmentId: 'PROD', environmentName: 'PROD', environmentType: 'production', site: 'devopscasestudy.atlassian.net'
 		slackSend channel: 'devops-case-study-group', failOnError: true, message: "${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) ==>> PROD Deployment Complete", tokenCredentialId: 'SLACK-TOKEN'
 	}
 	
