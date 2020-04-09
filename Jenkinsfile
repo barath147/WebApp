@@ -47,7 +47,7 @@ node {
 	
 	stage('DeployAppTo PROD') {
 		deploy adapters: [tomcat7(credentialsId: 'TOMCAT-CREDS', path: '', url: 'http://18.191.219.231:8080')], contextPath: '/ProdWebapp', onFailure: false, war: '**/*.war'
-		jiraSendDeploymentInfo environmentId: 'PROD', environmentName: 'PROD', environmentType: 'testing', site: 'devopscasestudy.atlassian.net'
+		jiraSendDeploymentInfo environmentId: 'PROD', environmentName: 'PROD', environmentType: 'production', site: 'devopscasestudy.atlassian.net'
 		slackSend channel: 'devops-case-study-group', failOnError: true, message: "${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) ==>> PROD Deployment Complete", tokenCredentialId: 'SLACK-TOKEN'
 	}
 	
