@@ -1,6 +1,6 @@
 node {
 	stage('Initialize Pipeline') {
-		properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '10', numToKeepStr: '10')), pipelineTriggers([githubPush(), pollSCM('')])])
+		properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '10', numToKeepStr: '10')), disableConcurrentBuilds(), pipelineTriggers([githubPush(), pollSCM('')])])
 		server = Artifactory.server "artifactory"
         	rtMaven = Artifactory.newMavenBuild()
         	rtMaven.tool = "maven"
