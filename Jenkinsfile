@@ -6,6 +6,7 @@ node {
         	rtMaven.tool = "maven"
         	rtMaven.deployer releaseRepo:'libs-release-local', snapshotRepo:'libs-snapshot-local', server: server
         	rtMaven.resolver releaseRepo:'libs-release', snapshotRepo:'libs-snapshot', server: server
+		jiraComment body: "Starting Jenkins -  ${env.JOB_NAME} #${env.BUILD_NUMBER}", issueKey: 'DOPS-1'
 		slackSend channel: 'devops-case-study-group', failOnError: true, message: "${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) ==>> Pipeline Initialized", tokenCredentialId: 'SLACK-TOKEN'
     	}
     
