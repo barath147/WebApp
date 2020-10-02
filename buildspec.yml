@@ -26,10 +26,11 @@ phases:
         - printf '[{"name":"webapp-image","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
         - cat imagedefinitions.json
 artifacts:
-    files: imagedefinitions.json
-    base-directory: $CODEBUILD_SRC_DIR
-    secondary-artifacts:
-      JavaWebApp:
-        base-directory: $CODEBUILD_SRC_DIR
-        files:
-          - target/JavaWebApp-1.0.war
+  files:
+    - imagedefinitions.json
+  base-directory: $CODEBUILD_SRC_DIR
+  secondary-artifacts:
+    JavaWebApp:
+      base-directory: $CODEBUILD_SRC_DIR
+      files:
+        - target/JavaWebApp-1.0.war
