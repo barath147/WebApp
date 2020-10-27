@@ -1,0 +1,20 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - "ls -lart"
+      - "mvn -f pom.xml clean install -DskipTests"
+      - "pwd"
+      - "ls -lart"
+      #- "find . JavaWebApp-1.0.war"
+      - "cp ./target/JavaWebApp-1.0.war ./JavaWebApp.war"
+artifacts:
+  files:
+    - target/JavaWebApp-1.0.war
+  base-directory: $CODEBUILD_SRC_DIR
+  secondary-artifacts:
+    JavaWebApp:
+      base-directory: $CODEBUILD_SRC_DIR
+      files:
+        - JavaWebApp.war
